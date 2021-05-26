@@ -1,0 +1,44 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
+    bind:
+      $pageCreatorService: '@kunstmaan_node.page_creator_service'
+      $requiredLocales: "%requiredlocales%"
+      $fromEmail: "%esites_kunstmaan_extras.mailer_user%"
+      $fromName: "%esites_kunstmaan_extras.mailer_name%"
+      $enableTrailingSlashRedirect: "%esites_kunstmaan_extras.enable_trailing_slash_redirect%"
+
+  Esites\KunstmaanExtrasBundle\DataFixtures\ORM\:
+    resource: '../../DataFixtures/ORM'
+    tags:
+      - { name: doctrine.fixture.orm }
+
+  Esites\KunstmaanExtrasBundle\Command\:
+    resource: '../../Command'
+
+  Esites\KunstmaanExtrasBundle\Controller\:
+    resource: '../../Controller'
+
+  Esites\KunstmaanExtrasBundle\EventSubscriber\:
+    resource: '../../EventSubscriber'
+
+  Esites\KunstmaanExtrasBundle\EventSubscriber\Doctrine\:
+    resource: '../../EventSubscriber/Doctrine'
+    tags:
+      - { name: doctrine.event_subscriber, connection: default }
+
+  Esites\KunstmaanExtrasBundle\Helper\:
+    resource: '../../Helper'
+
+  Esites\KunstmaanExtrasBundle\Logger\:
+    resource: '../../Logger'
+
+  Esites\KunstmaanExtrasBundle\Service\:
+    resource: '../../Service'
+
+  Esites\KunstmaanExtrasBundle\Twig\:
+    resource: '../../Twig'
+
+  Kunstmaan\AdminBundle\Helper\DomainConfigurationInterface: '@kunstmaan_multi_domain.domain_configuration'

@@ -1,0 +1,5 @@
+{% set regions = get_used_regions(page) %}
+
+{% for region in regions %}
+    {{ render_pageparts(page, region) }}
+{% endfor %}
