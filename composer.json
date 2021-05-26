@@ -45,5 +45,5 @@
     "psr-4": {
       "Esites\\KunstmaanExtrasBundle\\": "src/"
     }
-  },
+  }
 }
