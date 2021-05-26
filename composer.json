@@ -11,7 +11,6 @@
   "license": "proprietary",
   "require": {
     "php": ">=7.4",
-    "esites/symfony-extras-bundle": "^0.2",
     "kunstmaan/node-search-bundle": "^5.0",
     "kunstmaan/admin-bundle": "^5.0",
     "kunstmaan/media-bundle": "^5.0",
@@ -47,10 +46,3 @@
       "Esites\\KunstmaanExtrasBundle\\": "src/"
     }
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://gitlab.e-sites.nl/e-sites/symfony/extrasbundle.git"
-    }
-  ]
-}
