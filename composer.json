@@ -1,5 +1,5 @@
 {
-  "name": "esites/kunstmaan-extras-bundle",
+  "name": "milanpol/kunstmaan-extras-bundle",
   "description": "Features and overrides for Kunstmaan 5.* projects",
   "type": "symfony-bundle",
   "authors": [
