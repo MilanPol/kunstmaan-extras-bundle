@@ -8,19 +8,13 @@ interface PageCreatorConfigInterface
 {
     public function getTitle(string $locale = '_default'): ?string;
 
-    public function setTitle(
-        ?string $title = null,
-        string $locale = '_default'
-    ): PageCreatorConfigInterface;
+    public function setTitle(string $title = null, string $locale = '_default'): PageCreatorConfigInterface;
 
     public function setTitles(array $titles): PageCreatorConfigInterface;
 
-    public function getSlug(string $locale = '_default'): string;
+    public function getSlug(string $locale = '_default'): ?string;
 
-    public function setSlug(
-        ?string $slug = null,
-        string $locale = '_default'
-    ): PageCreatorConfigInterface;
+    public function setSlug(string $slug = null, string $locale = '_default'): PageCreatorConfigInterface;
 
     public function setSlugs(array $slugs): PageCreatorConfigInterface;
 
@@ -30,7 +24,7 @@ interface PageCreatorConfigInterface
 
     public function getInternalName(): ?string;
 
-    public function setInternalName(?string $internalName = null): PageCreatorConfigInterface;
+    public function setInternalName(string $internalName = null): PageCreatorConfigInterface;
 
     public function getOnline(): bool;
 
@@ -42,9 +36,9 @@ interface PageCreatorConfigInterface
 
     public function getCreator(): ?string;
 
-    public function setCreator(?string $creator = null): PageCreatorConfigInterface;
+    public function setCreator(string $creator = null): PageCreatorConfigInterface;
 
     public function getCreatorObject(): ?object;
 
-    public function setCreatorObject(?object $creator = null): PageCreatorConfigInterface;
+    public function setCreatorObject(object $creator = null): PageCreatorConfigInterface;
 }

@@ -14,6 +14,7 @@ abstract class AbstractOnFlushListener
 
     protected UnitOfWork $unitOfWork;
 
+
     public function onFlush(OnFlushEventArgs $args): void
     {
         $this->entityManager = $args->getEntityManager();

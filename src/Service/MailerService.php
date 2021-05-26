@@ -25,6 +25,7 @@ class MailerService
 
     private ?string $fromName;
 
+
     public function __construct(
         Environment $twigEnvironment,
         Swift_Mailer $mailer,
@@ -57,22 +58,17 @@ class MailerService
 
         $this->validateParameters();
 
-        $message = $this->buildMessage(
-            $toEmail,
-            $subject,
-            $html
-        );
+        $message = $this->buildMessage($toEmail, $subject, $html);
 
-        $this->addAttachments(
-            $attachments,
-            $message
-        );
+        $this->addAttachments($attachments, $message);
 
         if (is_array($bcc)) {
-            $this->addBcc(
-                $message,
-                $bcc
-            );
+            foreach ($bcc as $bccEmail) {
+                if (!is_string($bccEmail)) {
+                    continue;
+                }
+                $message->addBcc($bccEmail);
+            }
         }
 
         $this->mailer->send($message);
@@ -98,16 +94,9 @@ class MailerService
 
         $this->validateParameters();
 
-        $message = $this->buildMessage(
-            $user->getEmail(),
-            $subject,
-            $html
-        );
+        $message = $this->buildMessage($user->getEmail(), $subject, $html);
 
-        $this->addAttachments(
-            $attachments,
-            $message
-        );
+        $this->addAttachments($attachments, $message);
 
         if ($bcc instanceof BaseUserCollection) {
             /** @var BaseUser $bccUser */
@@ -134,18 +123,12 @@ class MailerService
         }
     }
 
-    private function buildMessage(
-        string $toEmail,
-        string $subject,
-        string $html
-    ): Swift_Message {
-        /** @var string $fromEmail */
-        $fromEmail = $this->fromEmail;
-
+    private function buildMessage(string $toEmail, string $subject, string $html): Swift_Message
+    {
         return (new Swift_Message())
             ->setSubject($subject)
             ->setFrom(
-                $fromEmail,
+                $this->fromEmail,
                 $this->fromName
             )
             ->setTo($toEmail)
@@ -156,27 +139,12 @@ class MailerService
             ;
     }
 
-    private function addAttachments(
-        ?AttachmentCollection $attachments,
-        Swift_Message $message
-    ): void {
+    private function addAttachments(?AttachmentCollection $attachments, Swift_Message $message): void
+    {
         if ($attachments instanceof AttachmentCollection) {
             foreach ($attachments as $attachment) {
                 $message->attach($attachment);
             }
-        }
-    }
-
-    private function addBcc(
-        Swift_Message $message,
-        array $bcc
-    ): void {
-        foreach ($bcc as $bccEmail) {
-            if (!is_string($bccEmail)) {
-                continue;
-            }
-
-            $message->addBcc($bccEmail);
         }
     }
 }

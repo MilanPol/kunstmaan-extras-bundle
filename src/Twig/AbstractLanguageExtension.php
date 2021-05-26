@@ -26,6 +26,7 @@ abstract class AbstractLanguageExtension extends AbstractExtension
 
     protected UrlGeneratorInterface $urlGenerator;
 
+
     public function __construct(
         TranslatorInterface $translator,
         RequestStack $requestStack,
@@ -39,6 +40,7 @@ abstract class AbstractLanguageExtension extends AbstractExtension
     abstract public function getActiveLanguages(): LanguageTranslationDataObject;
 
     abstract public function getDefaultLanguage(): string;
+
 
     public function getFunctions(): array
     {
@@ -63,56 +65,42 @@ abstract class AbstractLanguageExtension extends AbstractExtension
             );
         }
 
-        $switchLanguages = new SwitchLanguageValueObjectCollection();
         $languageTranslationDataObject = $this->getActiveLanguages();
         $activeLanguages = $languageTranslationDataObject->getLanguages();
         $currentLanguage = $this->getCurrentLanguage($request);
-        $languages = [
-            $currentLanguage => $activeLanguages[$currentLanguage],
-        ];
+
+        $languages[$currentLanguage] = $activeLanguages[$currentLanguage];
         $languages = array_merge(
             $languages,
             $activeLanguages
         );
 
+        $switchLanguages = new SwitchLanguageValueObjectCollection();
+
         foreach ($languages as $language => $name) {
-            $this->addSwitchLanguage(
-                $request,
-                $switchLanguages,
-                $language,
-                $name
-            );
+            if (!is_string($language)) {
+                continue;
+            }
+
+            try {
+                $url = $this->getSwitchLanguageUrl(
+                    $request,
+                    $language
+                );
+
+                $switchLanguages->addElement(
+                    new SwitchLanguageValueObject(
+                        $language,
+                        $name,
+                        $url
+                    )
+                );
+            } catch (NoNodeTranslationException $noNodeTranslationException) {
+                continue;
+            }
         }
 
         return $switchLanguages;
-    }
-
-    private function addSwitchLanguage(
-        Request $request,
-        SwitchLanguageValueObjectCollection $switchLanguages,
-        string $language,
-        string $name
-    ): void {
-        if (!is_string($language)) {
-            return;
-        }
-
-        try {
-            $url = $this->getSwitchLanguageUrl(
-                $request,
-                $language
-            );
-
-            $switchLanguages->addElement(
-                new SwitchLanguageValueObject(
-                    $language,
-                    $name,
-                    $url
-                )
-            );
-        } catch (NoNodeTranslationException $noNodeTranslationException) {
-            return;
-        }
     }
 
     private function getCurrentLanguage(Request $request): string
@@ -123,19 +111,13 @@ abstract class AbstractLanguageExtension extends AbstractExtension
             return $this->getDefaultLanguage();
         }
 
-        $activeLanguages = $this->getActiveLanguages()->getLanguages();
+        $activeLanguages = $this->getActiveLanguages();
 
-        $hasLocale = in_array(
-            $locale,
-            $activeLanguages,
-            true
-        );
-
-        if ($hasLocale) {
-            return $locale;
+        if (!isset($activeLanguages[$locale])) {
+            return $this->getDefaultLanguage();
         }
 
-        return $this->getDefaultLanguage();
+        return $locale;
     }
 
     /**
@@ -157,26 +139,6 @@ abstract class AbstractLanguageExtension extends AbstractExtension
             );
         }
 
-        $languageNodeTranslation = $this->getLanguageNodeTranslation(
-            $nodeTranslation,
-            $language
-        );
-
-        $parameters['url'] = $languageNodeTranslation->getUrl();
-
-        return $this->urlGenerator->generate(
-            '_slug',
-            $parameters
-        );
-    }
-
-    /**
-     * @throws NoNodeTranslationException
-     */
-    private function getLanguageNodeTranslation(
-        NodeTranslation $nodeTranslation,
-        string $language
-    ): NodeTranslation {
         $node = $nodeTranslation->getNode();
 
         if (!$node instanceof Node) {
@@ -189,10 +151,15 @@ abstract class AbstractLanguageExtension extends AbstractExtension
 
         if (!$languageNodeTranslation instanceof NodeTranslation) {
             throw new NoNodeTranslationException(
-                'Node translations not found for language ' . $language
+                'Node translations not found for language '.$language
             );
         }
 
-        return $languageNodeTranslation;
+        $parameters['url'] = $nodeTranslation->getUrl();
+
+        return $this->urlGenerator->generate(
+            '_slug',
+            $parameters
+        );
     }
 }

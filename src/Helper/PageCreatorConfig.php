@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Esites\KunstmaanExtrasBundle\Helper;
 
-use Kunstmaan\UtilitiesBundle\Helper\Slugifier;
-
 class PageCreatorConfig implements PageCreatorConfigInterface
 {
-    protected const ADMIN_USERNAME = 'admin';
+	protected const ADMIN_USERNAME = 'admin';
 
     protected array $titles = [];
 
@@ -26,134 +24,126 @@ class PageCreatorConfig implements PageCreatorConfigInterface
 
     protected int $weight = 0;
 
-    public function getTitle(string $locale = '_default'): string
-    {
-        if (isset($this->titles[$locale])) {
-            return $this->titles[$locale];
-        }
+	public function getTitle(string $locale = '_default'): string
+	{
+		if (isset($this->titles[$locale])) {
+			return $this->titles[$locale];
+		}
 
-        return $this->titles['_default'] ?? '';
-    }
+		return $this->titles['_default'] ?? '';
+	}
 
-    public function setTitle(
-        ?string $title = null,
-        string $locale = '_default'
-    ): PageCreatorConfigInterface {
-        if ($title !== null) {
-            $this->titles[$locale] = $title;
-        }
+	public function setTitle(string $title = null, string $locale = '_default'): PageCreatorConfigInterface
+	{
+		if ($title !== null) {
+			$this->titles[$locale] = $title;
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function setTitles(array $titles): PageCreatorConfigInterface
-    {
-        if ($titles !== null) {
-            $this->titles = $titles;
-        }
+	public function setTitles(array $titles): PageCreatorConfigInterface
+	{
+		if ($titles !== null) {
+			$this->titles = $titles;
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function getSlug(string $locale = '_default'): string
-    {
-        if (isset($this->slugs[$locale])) {
-            return $this->slugs[$locale];
-        }
+	public function getSlug(string $locale = '_default'): string
+	{
+		if (isset($this->slugs[$locale])) {
+			return $this->slugs[$locale];
+		}
 
-        if (isset($this->slugs['_default'])) {
-            return $this->slugs['_default'];
-        }
+		return
+			$this->slugs['_default'] ??
+			strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $this->getTitle($locale))));
+	}
 
-        $slugifer = new Slugifier();
+	public function setSlug(string $slug = null, string $locale = '_default'): PageCreatorConfigInterface
+	{
+		if ($slug !== null) {
+			$this->slugs[$locale] = $slug;
+		}
 
-        return $slugifer->slugify($this->getTitle($locale));
-    }
+		return $this;
+	}
 
-    public function setSlug(
-        ?string $slug = null,
-        string $locale = '_default'
-    ): PageCreatorConfigInterface {
-        if ($slug !== null) {
-            $this->slugs[$locale] = $slug;
-        }
+	public function setSlugs(array $slugs): PageCreatorConfigInterface
+	{
+		$this->slugs = $slugs;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function setSlugs(array $slugs): PageCreatorConfigInterface
-    {
-        $this->slugs = $slugs;
+	public function getHiddenFromNav(): bool
+	{
+		return $this->hiddenFromNav;
+	}
 
-        return $this;
-    }
+	public function setHiddenFromNav(bool $hiddenFromNav): PageCreatorConfigInterface
+	{
+		$this->hiddenFromNav = $hiddenFromNav;
 
-    public function getHiddenFromNav(): bool
-    {
-        return $this->hiddenFromNav;
-    }
+		return $this;
+	}
 
-    public function setHiddenFromNav(bool $hiddenFromNav): PageCreatorConfigInterface
-    {
-        $this->hiddenFromNav = $hiddenFromNav;
+	public function getOnline(): bool
+	{
+		return $this->online;
+	}
 
-        return $this;
-    }
+	public function setOnline(bool $online): PageCreatorConfigInterface
+	{
+		$this->online = $online;
 
-    public function getOnline(): bool
-    {
-        return $this->online;
-    }
+		return $this;
+	}
 
-    public function setOnline(bool $online): PageCreatorConfigInterface
-    {
-        $this->online = $online;
+	public function getCreator(): ?string
+	{
+		return $this->creator;
+	}
 
-        return $this;
-    }
+	public function setCreator(?string $creator = null): PageCreatorConfigInterface
+	{
+		$this->creator = $creator;
 
-    public function getCreator(): ?string
-    {
-        return $this->creator;
-    }
+		return $this;
+	}
 
-    public function setCreator(?string $creator = null): PageCreatorConfigInterface
-    {
-        $this->creator = $creator;
+	public function getInternalName(): ?string
+	{
+		return $this->internalName;
+	}
 
-        return $this;
-    }
+	public function setInternalName(?string $internalName = null): PageCreatorConfigInterface
+	{
+		$this->internalName = $internalName;
 
-    public function getInternalName(): ?string
-    {
-        return $this->internalName;
-    }
+		return $this;
+	}
 
-    public function setInternalName(?string $internalName = null): PageCreatorConfigInterface
-    {
-        $this->internalName = $internalName;
+	public function getWeight(): int
+	{
+		return $this->weight ?? 0;
+	}
 
-        return $this;
-    }
+	public function setWeight(int $weight): PageCreatorConfigInterface
+	{
+		$this->weight = $weight;
 
-    public function getWeight(): int
-    {
-        return $this->weight ?? 0;
-    }
-
-    public function setWeight(int $weight): PageCreatorConfigInterface
-    {
-        $this->weight = $weight;
-
-        return $this;
-    }
+		return $this;
+	}
 
     public function getCreatorObject(): ?object
     {
         return $this->creatorObject;
     }
 
-    public function setCreatorObject(?object $creator = null): PageCreatorConfigInterface
+    public function setCreatorObject(object $creator = null): PageCreatorConfigInterface
     {
         $this->creatorObject = $creator;
 

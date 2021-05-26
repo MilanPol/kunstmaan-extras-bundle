@@ -1,12 +1,7 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Esites\KunstmaanExtrasBundle\Service;
 
-/**
- * @deprecated use Esites\SymfonyExrasBundle\Service\EmojiService instead;
- */
 class EmojiService
 {
     public function removeEmojis(string $text): string

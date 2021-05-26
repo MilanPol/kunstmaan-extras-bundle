@@ -19,6 +19,7 @@ abstract class AbstractSiteConfigExtension extends AbstractExtension
 
     protected EntityManagerInterface $entityManager;
 
+
     public function __construct(
         RequestStack $requestStack,
         EntityManagerInterface $entityManager
@@ -62,10 +63,10 @@ abstract class AbstractSiteConfigExtension extends AbstractExtension
             throw new InvalidArgumentException('Invalid language');
         }
 
-        /** @var class-string $siteConfigClassName */
-        $siteConfigClassName = $siteConfigurations[$language];
+        $siteConfigRepository = $this->entityManager->getRepository(
+            $siteConfigurations[$language]
+        );
 
-        $siteConfigRepository = $this->entityManager->getRepository($siteConfigClassName);
         $siteConfig = $siteConfigRepository->findOneBy([]);
 
         if (!$siteConfig instanceof AbstractDefaultSiteConfig) {

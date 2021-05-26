@@ -10,7 +10,10 @@ use Twig\TwigFunction;
 
 class MediaExtension extends AbstractExtension
 {
-    private MediaService $mediaService;
+    /**
+     * @var MediaService
+     */
+    private $mediaService;
 
     public function __construct(
         MediaService $mediaService

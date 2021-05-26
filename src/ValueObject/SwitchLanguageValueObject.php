@@ -12,11 +12,13 @@ class SwitchLanguageValueObject
 
     private string $url;
 
+
     public function __construct(
         string $language,
         string $name,
         string $url
     ) {
+
         $this->language = $language;
         $this->name = $name;
         $this->url = $url;

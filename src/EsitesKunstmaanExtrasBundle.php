@@ -10,10 +10,10 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class EsitesKunstmaanExtrasBundle extends Bundle
 {
-    public function build(ContainerBuilder $container): void
-    {
-        parent::build($container);
+	public function build(ContainerBuilder $container): void
+	{
+		parent::build($container);
 
-        $container->registerExtension(new EsitesKunstmaanExtrasExtension());
-    }
+		$container->registerExtension(new EsitesKunstmaanExtrasExtension());
+	}
 }

@@ -14,6 +14,7 @@ class NodeJoinParametersValueObject
 
     private string $entityAlias;
 
+
     public function __construct(
         string $fieldNameWithNodeRelation,
         string $pageAlias,

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Esites\KunstmaanExtrasBundle\Constants;
 
-/**
- * @deprecated use Esites\SymfonyExtrasBundle\Constants\FlashConstants instead
- */
 class FlashConstants
 {
     public const TYPE_SUCCESS = 'success';

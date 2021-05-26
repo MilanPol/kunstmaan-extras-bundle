@@ -28,14 +28,7 @@ class LinkExtension extends AbstractExtension
             return false;
         }
 
-        if (preg_match(
-            '/^\[NT\d+\]$/',
-            $link
-        )) {
-            return true;
-        }
-
-        if ($link !== '' && $link[0] === '/') {
+        if (preg_match('/\[NT\d+\]/', $link)) {
             return true;
         }
 

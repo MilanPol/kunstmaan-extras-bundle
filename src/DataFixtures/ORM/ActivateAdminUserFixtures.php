@@ -4,44 +4,42 @@ declare(strict_types=1);
 
 namespace Esites\KunstmaanExtrasBundle\DataFixtures\ORM;
 
-use Doctrine\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\ObjectManager;
 use Exception;
-use Kunstmaan\AdminBundle\Entity\BaseUser;
+use FOS\UserBundle\Model\UserInterface;
+use Kunstmaan\AdminBundle\Entity\User;
 use Kunstmaan\GeneratorBundle\DataFixtures\ORM\UserFixtures;
-use RuntimeException;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class ActivateAdminUserFixtures extends AbstractFixture
 {
-    private const DEFAULT_PASSWORD = 'picobello';
+	/**
+	 * Activate the admin user
+	 *
+	 * @throws Exception
+	 */
+	public function load(ObjectManager $manager): void
+	{
+		$password = 'picobello';
 
-    /**
-     * Activate the admin user
-     *
-     * @throws Exception
-     */
-    public function load(ObjectManager $manager): void
-    {
-        $adminUser = $this->getReference(UserFixtures::REFERENCE_ADMIN_USER);
+		/** @var UserInterface|User $adminUser */
+		$adminUser = $this->getReference(UserFixtures::REFERENCE_ADMIN_USER);
+		if ($adminUser === null) {
+			throw new \RuntimeException('Could not find user by username \'admin\'.');
+		}
 
-        if (!$adminUser instanceof BaseUser) {
-            throw new RuntimeException('Could not find user by username \'admin\'.');
-        }
+		$adminUser->setEnabled(true);
+		$adminUser->setPlainPassword($password);
+		$adminUser->setPasswordChanged(true);
 
-        $adminUser->setEnabled(true);
-        $adminUser->setPlainPassword(static::DEFAULT_PASSWORD);
-        $adminUser->setPasswordChanged(true);
+		$manager->flush();
 
-        $manager->flush();
+		$output = new ConsoleOutput();
+		$output->writeln(["<comment>  > User 'admin' activated with password '$password'</comment>"]);
+	}
 
-        $output = new ConsoleOutput();
-        $output->writeln(
-            ["<comment>  > User 'admin' activated with password '" . static::DEFAULT_PASSWORD . "'</comment>"]
-        );
-    }
-
-    public function getOrder(): int
-    {
-        return 9999;
-    }
+	public function getOrder(): int
+	{
+		return 9999;
+	}
 }

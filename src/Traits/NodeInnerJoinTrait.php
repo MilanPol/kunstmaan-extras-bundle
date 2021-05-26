@@ -17,7 +17,8 @@ trait NodeInnerJoinTrait
         QueryBuilder $queryBuilder,
         NodeJoinParametersValueObject $nodeJoinParametersValueObject
     ): QueryBuilder {
-        $counter = $this->getCounter();
+        $counter = ++$this->uniqueJoinIncrementCounter;
+
         $nodeTableAlias = 'nodes_' . $counter;
         $nodeVersion = 'nodeVersion_' . $counter;
         $nodeTranslation = 'nodeTranslation' . $counter;
@@ -66,7 +67,8 @@ trait NodeInnerJoinTrait
         QueryBuilder $queryBuilder,
         NodeJoinParametersValueObject $nodeJoinParametersValueObject
     ): QueryBuilder {
-        $counter = $this->getCounter();
+        $counter = ++$this->uniqueJoinIncrementCounter;
+
         $nodeTableAlias = 'nodes_'.$counter;
         $nodeVersion = 'nodeVersion_'.$counter;
         $nodeTranslation = 'nodeTranslation'.$counter;
@@ -96,15 +98,8 @@ trait NodeInnerJoinTrait
             ->andWhere($nodeTableAlias.'.deleted = 0')
             ->andWhere($nodeTranslation.'.online = 1')
             ->andWhere($nodeTranslation.'.lang = :lang')
-            ->setParameter('lang', Locale::getDefault());
+            ->setParameter('lang', \Locale::getDefault());
 
         return $queryBuilder;
-    }
-
-    private function getCounter(): int
-    {
-        $this->uniqueJoinIncrementCounter++;
-
-        return $this->uniqueJoinIncrementCounter;
     }
 }

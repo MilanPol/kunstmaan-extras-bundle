@@ -18,10 +18,9 @@ class UrlService
 
     private RouterInterface $router;
 
-    public function __construct(
-        EntityManagerInterface $entityManager,
-        RouterInterface $router
-    ) {
+
+    public function __construct(EntityManagerInterface $entityManager, RouterInterface $router)
+    {
         $this->entityManager = $entityManager;
         $this->router = $router;
     }
@@ -30,44 +29,28 @@ class UrlService
         AbstractPage $page,
         array $parameters = []
     ): string {
-        return $this->getUrl(
-            $page,
-            $parameters,
-            UrlGeneratorInterface::ABSOLUTE_PATH
-        );
+        return $this->getUrl($page, $parameters, UrlGeneratorInterface::ABSOLUTE_PATH);
     }
 
     public function getAbsoluteUrl(
         AbstractPage $page,
         array $parameters = []
     ): string {
-        return $this->getUrl(
-            $page,
-            $parameters,
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
+        return $this->getUrl($page, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     public function getRelativePathUrl(
         AbstractPage $page,
         array $parameters = []
     ): string {
-        return $this->getUrl(
-            $page,
-            $parameters,
-            UrlGeneratorInterface::RELATIVE_PATH
-        );
+        return $this->getUrl($page, $parameters, UrlGeneratorInterface::RELATIVE_PATH);
     }
 
     public function getNetworkPathUrl(
         AbstractPage $page,
         array $parameters = []
     ): string {
-        return $this->getUrl(
-            $page,
-            $parameters,
-            UrlGeneratorInterface::NETWORK_PATH
-        );
+        return $this->getUrl($page, $parameters, UrlGeneratorInterface::NETWORK_PATH);
     }
 
     private function getUrl(

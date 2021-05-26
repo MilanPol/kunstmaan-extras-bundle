@@ -11,8 +11,6 @@ class ConfigConstants
     public const MAILER_USER = 'mailer_user';
     public const MAILER_NAME = 'mailer_name';
 
-    public const ENABLE_TRAILING_SLASH_REDIRECT = 'enable_trailing_slash_redirect';
-
     public static function getParameterKeyName(string $key): string
     {
         return static::PREFIX_KEY . '.' . $key;
@@ -23,7 +21,6 @@ class ConfigConstants
         return [
             static::MAILER_USER,
             static::MAILER_NAME,
-            static::ENABLE_TRAILING_SLASH_REDIRECT,
         ];
     }
 }

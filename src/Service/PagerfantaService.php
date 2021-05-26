@@ -6,7 +6,7 @@ namespace Esites\KunstmaanExtrasBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use Esites\KunstmaanExtrasBundle\Constants\PaginationConstants;
-use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -20,32 +20,23 @@ class PagerfantaService
         $this->request = $requestStack->getCurrentRequest();
     }
 
-    /**
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     */
     public function getPagerfanta(
         QueryBuilder $queryBuilder,
         int $itemsPerPage = PaginationConstants::DEFAULT_ITEMS_PER_PAGE,
         bool $fetchJoinCollection = true
     ): Pagerfanta {
-        $adapter = new QueryAdapter(
-            $queryBuilder,
-            $fetchJoinCollection
-        );
+        $adapter = new DoctrineORMAdapter($queryBuilder, $fetchJoinCollection);
 
         $currentPage = 1;
 
         if ($this->request instanceof Request) {
-            $currentPage = $this->request->get(
-                PaginationConstants::QUERY_PARAMETER,
-                $currentPage
-            );
+            $currentPage = $this->request->get(PaginationConstants::QUERY_PARAMETER, $currentPage);
         }
 
         $pagerfanta = new Pagerfanta($adapter);
         $pagerfanta->setMaxPerPage($itemsPerPage);
         $pagerfanta->setCurrentPage($currentPage);
-
+        
         return $pagerfanta;
     }
 }

@@ -7,9 +7,6 @@ namespace Esites\KunstmaanExtrasBundle\Logger;
 use Monolog\Handler\FingersCrossed\ErrorLevelActivationStrategy;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-/**
- * @deprecated
- */
 class LogActivationStrategy extends ErrorLevelActivationStrategy
 {
     public function __construct()

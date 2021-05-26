@@ -9,17 +9,12 @@ use Assert\Assertion;
 use Doctrine\Common\Collections\ArrayCollection;
 use IteratorAggregate;
 
-/**
- * @deprecated use Esites\SymfonyExtrasBundle\ValueObject\Collections\AbstractCollection instead
- */
 abstract class AbstractCollection implements IteratorAggregate
 {
-    /**
-     * @return class-string
-     */
     abstract public function getClassOfElement(): string;
 
     protected ArrayCollection $collection;
+
 
     public function __construct(array $elements = [])
     {
@@ -30,10 +25,7 @@ abstract class AbstractCollection implements IteratorAggregate
 
     public function addElement(object $element): self
     {
-        Assertion::isInstanceOf(
-            $element,
-            $this->getClassOfElement()
-        );
+        Assertion::isInstanceOf($element, $this->getClassOfElement());
 
         $this->collection->add($element);
 
@@ -42,10 +34,7 @@ abstract class AbstractCollection implements IteratorAggregate
 
     public function addElements(array $elements): self
     {
-        Assertion::allIsInstanceOf(
-            $elements,
-            $this->getClassOfElement()
-        );
+        Assertion::allIsInstanceOf($elements, $this->getClassOfElement());
         foreach ($elements as $element) {
             $this->addElement($element);
         }
@@ -55,10 +44,7 @@ abstract class AbstractCollection implements IteratorAggregate
 
     public function removeElement(object $element): self
     {
-        Assertion::isInstanceOf(
-            $element,
-            $this->getClassOfElement()
-        );
+        Assertion::isInstanceOf($element, $this->getClassOfElement());
 
         $this->collection->removeElement($element);
 
@@ -75,20 +61,14 @@ abstract class AbstractCollection implements IteratorAggregate
     public function toArray(): array
     {
         $list = $this->collection->toArray();
-        Assertion::allIsInstanceOf(
-            $list,
-            $this->getClassOfElement()
-        );
+        Assertion::allIsInstanceOf($list, $this->getClassOfElement());
 
         return $list;
     }
 
     public function contains(object $element): bool
     {
-        Assertion::isInstanceOf(
-            $element,
-            $this->getClassOfElement()
-        );
+        Assertion::isInstanceOf($element, $this->getClassOfElement());
 
         return $this->collection->contains($element);
     }
@@ -98,17 +78,14 @@ abstract class AbstractCollection implements IteratorAggregate
         return $this->collection->count();
     }
 
-    public function getIterator(): ArrayIterator
+    public function getIterator(): \ArrayIterator
     {
         return new ArrayIterator($this->toArray());
     }
 
     public function first(): object
     {
-        Assertion::greaterThan(
-            $this->count(),
-            0
-        );
+        Assertion::greaterThan($this->count(), 0);
 
         return $this->collection[0];
     }

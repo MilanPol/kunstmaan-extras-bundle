@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Esites\KunstmaanExtrasBundle\Helper;
 
-use Esites\KunstmaanExtrasBundle\Interfaces\NodeTranslationInterface;
-use InvalidArgumentException;
 use Kunstmaan\NodeBundle\Entity\AbstractPage;
 use Kunstmaan\NodeBundle\Entity\Node;
 use Kunstmaan\NodeBundle\Entity\NodeTranslation;
+use Kunstmaan\NodeBundle\Entity\PageInterface;
 use Kunstmaan\NodeBundle\Helper\Services\PageCreatorService;
 use Kunstmaan\SeoBundle\Entity\Seo;
 
@@ -34,48 +33,46 @@ class PageCreator
         );
     }
 
-    /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-     */
     public function create(
         string $type,
         PageCreatorConfigInterface $config,
-        ?Node $parent = null,
-        ?callable $closure = null
+        Node $parent = null,
+        callable $closure = null
     ): Node {
         /** @var AbstractPage $subject */
-        $subject = new $type();
-        $subject->setTitle((string) $config->getTitle());
+        $subject = new $type;
+        $subject->setTitle($config->getTitle());
 
         $translations = [];
         foreach ($this->requiredLocales as $locale) {
             $translations[] = [
                 'language' => $locale,
-                'callback' => static function (
-                    AbstractPage $page,
-                    NodeTranslation $nodeTranslation,
+                'callback' => function (
+                    PageInterface $page,
+                    NodeTranslation $translation,
                     Seo $seo
-                ) use (
+                ) use
+                (
                     $config,
                     $locale,
                     $closure
-                ): void {
-                    $nodeTranslation->setTitle((string) $config->getTitle($locale));
-                    $nodeTranslation->setLang($locale);
-                    $nodeTranslation->setSlug($config->getSlug($locale));
-                    $nodeTranslation->setWeight($config->getWeight());
+                ) {
+                    $translation->setTitle($config->getTitle($locale));
+                    $translation->setLang($locale);
+                    $translation->setSlug($config->getSlug($locale));
+                    $translation->setWeight($config->getWeight());
 
-                    $page->setPageTitle((string) $config->getTitle($locale));
-
-                    if ($page instanceof NodeTranslationInterface) {
-                        $page->setNodeTranslation($nodeTranslation);
+                    if (method_exists(
+                        $page,
+                        'setPageTitle'
+                    )) {
+                        $page->setPageTitle($config->getTitle($locale));
                     }
 
                     if ($closure !== null) {
                         $closure(
                             $page,
-                            $nodeTranslation
+                            $translation
                         );
                     }
                 },
@@ -86,11 +83,11 @@ class PageCreator
             $subject,
             $translations,
             [
-                'parent'             => $parent,
+                'parent' => $parent,
                 'page_internal_name' => $config->getInternalName(),
-                'set_online'         => $config->getOnline(),
-                'hidden_from_nav'    => $config->getHiddenFromNav(),
-                'creator'            => $config->getCreatorObject() ?? $config->getCreator() ?? static::ADMIN_USERNAME,
+                'set_online' => $config->getOnline(),
+                'hidden_from_nav' => $config->getHiddenFromNav(),
+                'creator' => $config->getCreatorObject() ?? $config->getCreator() ?? static::ADMIN_USERNAME,
             ]
         );
     }
@@ -98,17 +95,17 @@ class PageCreator
     public function recursivelyCreatePages(
         array $pages,
         int $weight,
-        Node $parent,
+        $parent,
         int $depth = 3,
-        ?callable $closure = null
+        callable $closure = null
     ): void {
         if ($depth <= 0) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 'The maximum depth at which you can create content pages has been reached.'
             );
         }
 
-        foreach ($pages as $pageData) {
+        foreach ($pages as $slug => $pageData) {
             $weight++;
 
             $pageParent = $this->createPageWithParent(
@@ -123,7 +120,7 @@ class PageCreator
                     $pageData['subs'],
                     $weight,
                     $pageParent,
-                    $depth - 1,
+                    $depth--,
                     $closure
                 );
             }
@@ -134,10 +131,10 @@ class PageCreator
         Node $parent,
         array $pageData,
         int $weight,
-        ?callable $closure = null
+        callable $closure = null
     ): Node {
         if (!isset($pageData['type']) || !class_exists($pageData['type'])) {
-            throw new InvalidArgumentException('Missing page type');
+            throw new \InvalidArgumentException('missing page type');
         }
 
         $type = $pageData['type'];

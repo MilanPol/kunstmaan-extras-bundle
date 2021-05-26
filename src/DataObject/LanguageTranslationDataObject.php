@@ -6,9 +6,6 @@ namespace Esites\KunstmaanExtrasBundle\DataObject;
 
 class LanguageTranslationDataObject
 {
-    /**
-     * @var array<string,string>
-     */
     private array $languages = [];
 
     public function addLanguage(
@@ -20,9 +17,6 @@ class LanguageTranslationDataObject
         return $this;
     }
 
-    /**
-     * @return array<string,string>
-     */
     public function getLanguages(): array
     {
         return $this->languages;
